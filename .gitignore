@@ -123,6 +123,7 @@ celerybeat.pid
 
 # Environments
 .env
+**/.env
 .venv
 env/
 venv/
@@ -164,5 +165,8 @@ cython_debug/
 # AgentStack
 example_project/
 ex/
+**/ex/
 cookiecutter.json
 
+examples/tests/
+examples/tests/**/*

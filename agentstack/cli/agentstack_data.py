@@ -1,11 +1,14 @@
 import json
 from datetime import datetime
-from typing import Optional, Union, Literal
+from typing import Optional, Literal
+
+from agentstack.utils import clean_input
+from agentstack.logger import log
 
 
 class ProjectMetadata:
     def __init__(self,
-                 project_name: str = "myagent",
+                 project_name: str = None,
                  project_slug: str = None,
                  description: str = "",
                  author_name: str = "",
@@ -13,13 +16,14 @@ class ProjectMetadata:
                  license: str = "",
                  year: int = datetime.now().year
                  ):
-        self.project_name = project_name
-        self.project_slug = project_slug or project_name.lower().replace('-', '_')
+        self.project_name = clean_input(project_name) if project_name else "myagent"
+        self.project_slug = clean_input(project_slug) if project_slug else self.project_name
         self.description = description
         self.author_name = author_name
         self.version = version
         self.license = license
         self.year = year
+        log.debug(f"ProjectMetadata: {self.to_dict()}")
 
     def to_dict(self):
         return {
@@ -59,7 +63,8 @@ class ProjectStructure:
 
 class FrameworkData:
     def __init__(self,
-                 name: Optional[Literal["crewai"]] = None
+                 # name: Optional[Literal["crewai"]] = None
+                 name: str = None  # TODO: better framework handling, Literal or Enum
                  ):
         self.name = name
 
@@ -76,7 +81,8 @@ class CookiecutterData:
     def __init__(self,
                  project_metadata: ProjectMetadata,
                  structure: ProjectStructure,
-                 framework: Literal["crewai"],
+                 # framework: Literal["crewai"],
+                 framework: str,
                  ):
         self.project_metadata = project_metadata
         self.framework = framework
@@ -91,7 +97,3 @@ class CookiecutterData:
 
     def to_json(self):
         return json.dumps(self.to_dict(), default=str)
-
-
-
-
